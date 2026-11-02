@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta property="og:title" content="Trois minutes pour me dire ce que vous en pensez">
+<meta property="og:description" content="Mon projet de maisons en Provence. Votre avis, le vrai.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Questionnaire À l'écart</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Une question par écran, bouton en bas : pensé pour le pouce, ouvert depuis WhatsApp.
+   Volontairement sobre : le cadre ne doit favoriser aucune des trois pages testées. */
+:root{
+  color-scheme:light;
+  --papier:#FAF8F4; --carte:#FFFFFF; --encre:#20262A; --doux:#59605F; --trait:#D5D0C7;
+  --choix:#E9EEF0; --accent:#1F5C70; --sur-accent:#FFFFFF;
+  --titre:'Barlow Condensed','Arial Narrow',sans-serif; --texte:'Barlow','Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--papier);color:var(--encre);font-family:var(--texte);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+#app{min-height:100%;display:flex;flex-direction:column;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.barre{position:sticky;top:env(safe-area-inset-top,0px);background:var(--papier);padding-block:14px 10px;z-index:2}
+.barre-in,.ecran,.pied-in{width:100%;max-width:620px;margin-inline:auto}
+.large .barre-in,.large .ecran,.large .pied-in{max-width:980px}
+.compte{display:flex;justify-content:space-between;font-size:14px;color:var(--doux);font-variant-numeric:tabular-nums;margin-bottom:6px}
+.jauge{height:4px;background:var(--trait);border-radius:2px;overflow:hidden}
+.jauge i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.ecran{flex:1;padding-block:18px 28px;display:flex;flex-direction:column;gap:18px}
+h1,h2{font-family:var(--titre);font-weight:700;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.005em}
+h1{font-size:clamp(2.5rem,9vw,3.4rem)}
+h2{font-size:clamp(1.8rem,6vw,2.3rem)}
+p{margin:0;text-wrap:pretty}
+.aide{color:var(--doux);font-size:16px}
+.bloc{display:flex;flex-direction:column;gap:12px}
+.duree{align-self:flex-start;background:var(--accent);color:var(--sur-accent);font-weight:600;padding:8px 14px;border-radius:6px}
+.options{display:flex;flex-direction:column;gap:8px}
+.options.puces{flex-direction:row;flex-wrap:wrap}
+.opt{display:block;width:100%;text-align:left;font:inherit;color:var(--encre);background:var(--choix);border:2px solid transparent;border-radius:8px;padding:12px 14px;min-height:48px;cursor:pointer}
+.puces .opt{width:auto;padding:10px 14px}
+.opt small{display:block;color:var(--doux);font-size:14.5px;font-variant-numeric:tabular-nums}
+.opt[aria-pressed="true"]{background:var(--carte);border-color:var(--accent);font-weight:600}
+.opt[aria-pressed="true"] small{font-weight:400}
+.opt:disabled{opacity:.45;cursor:not-allowed}
+label.champ{display:flex;flex-direction:column;gap:6px;font-weight:500}
+input[type=text],textarea{font:inherit;color:var(--encre);background:var(--carte);border:1px solid var(--trait);border-radius:8px;padding:11px 12px;width:100%;min-width:0}
+textarea{min-height:96px;resize:vertical}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.pages{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.page{display:flex;flex-direction:column;gap:8px;min-width:0}
+.vignette{display:block;padding:0;border:1px solid var(--trait);border-radius:8px;overflow:hidden;background:var(--carte);cursor:zoom-in;width:100%}
+.vignette img{display:block;width:100%;height:auto}
+.page-tete{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.page-tete b{font-family:var(--titre);font-size:1.3rem}
+.lien{background:none;border:0;padding:6px 0;font:inherit;font-size:15px;color:var(--accent);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.pied{position:sticky;bottom:0;background:var(--papier);border-top:1px solid var(--trait);padding-block:10px calc(10px + env(safe-area-inset-bottom,0px))}
+.pied-in{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 22px;border-radius:8px;border:0;background:var(--accent);color:var(--sur-accent);font:inherit;font-weight:600;cursor:pointer;text-decoration:none;flex:1}
+.btn.second{background:transparent;color:var(--encre);border:1px solid var(--trait);flex:0 0 auto}
+.recap{white-space:pre-wrap;background:var(--carte);border:1px solid var(--trait);border-radius:8px;padding:12px;font-size:15px;max-height:240px;overflow:auto;user-select:all}
+.grand{position:fixed;inset:0;z-index:20;background:var(--papier);display:flex;flex-direction:column}
+.grand-tete{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--trait)}
+.grand-tete .btn{flex:0 0 auto;min-height:44px;padding:0 16px}
+.grand-corps{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;background:var(--trait)}
+.grand-corps img{display:block;width:100%;max-width:1100px;margin:0 auto;background:var(--carte)}
+@media (prefers-reduced-motion:reduce){.jauge i{transition:none}}
+</style>
+
+</head>
+<body>
+<div id="app">
+  <div class="barre" id="barre" hidden><div class="barre-in"><div class="compte"><span id="compte"></span><span id="reste"></span></div><div class="jauge"><i id="jauge"></i></div></div></div>
+  <main class="ecran" id="ecran" tabindex="-1"></main>
+  <div class="pied" id="pied"><div class="pied-in" id="pied-in"></div></div>
+</div>
+<div class="grand" id="grand" hidden role="dialog" aria-modal="true" aria-label="Page en grand">
+  <div class="grand-tete"><button class="btn second" id="fermer" type="button">Fermer</button><button class="btn" id="elire" type="button">Je choisis celle-ci</button></div>
+  <div class="grand-corps" id="grand-corps"><img id="grand-img" alt=""></div>
+</div>
+
+<script>
+/* Adresse du collecteur (Google Sheet). Vide : la fin du questionnaire propose de copier les réponses. */
+const COLLECTE = 'https://script.google.com/macros/s/AKfycbzlHxQ-Wyhn4YzfeVVAU825u4RBYHNFKQ6w1KEwKR5aMolFbK5ny_tuE_jtJeNxGrT-/exec';
+const DUREE = 'Environ 3 minutes · 12 questions';
+
+const PERS = 12, NUITS = 7;
+const euros = n => n.toLocaleString('fr-FR').replace(/\s/g, ' ') + ' €';
+const prixSemaine = [5000, 6000, 7000, 8000, 9000];
+
+function melange(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+/* L'ordre change à chaque ouverture : la première page montrée n'a pas d'avantage. La lettre suit la position. */
+const pages = melange(['pin', 'clair', 'mixte']);
+const lettre = i => 'ABC'[i];
+
+const services = melange([
+  'Un chef à domicile un soir', 'Un traiteur livré à l’arrivée', 'Le premier petit-déjeuner livré',
+  'Du pain frais chaque matin', 'Le ménage en milieu de séjour', 'Le kit bébé (lit, chaise, baignoire)',
+  'Une baby-sitter pour une soirée', 'Des vélos', 'Un atelier enfants animé',
+  'Une dégustation de vins sur place', 'Un massage à la maison', 'Un transfert depuis la gare'
+]);
+
+const Q = [
+  { id:'nom', titre:'La marque s’appellerait « à l’écart ». Ça vous plaît ?',
+    choix:['J’adore','Ça me plaît','Ça me laisse froid','Je changerais'],
+    texte:{ id:'nom_mot', label:'Ce nom vous évoque quoi, en un mot ou deux ?' } },
+  { id:'page', titre:'Quelle page d’accueil vous donne le plus envie ?', large:true, pagesSite:true,
+    aide:'Touchez une image pour voir la page entière.',
+    texte:{ id:'page_pourquoi', label:'Pourquoi celle-là ? Trois mots suffisent.' } },
+  { id:'piece', titre:'Une pièce invisible, qu’on ouvre après une chasse au trésor. Votre réaction ?',
+    choix:['Je veux y aller rien que pour ça','Sympa, un vrai plus','Mignon, sans plus','Ça ne me parle pas'] },
+  { id:'atouts', titre:'Qu’est-ce qui vous ferait choisir cette maison plutôt qu’une autre ?', max:2,
+    aide:'Deux réponses maximum.',
+    choix:melange(['La maison et son charme','La piscine et le grand jardin','Tout est prêt à l’arrivée','La pièce cachée et la chasse au trésor','De quoi occuper les enfants','Les villages autour']) },
+  { id:'prix_ete', titre:'Une semaine en août, la maison entière, jusqu’à quel prix réservez-vous sans trop hésiter ?',
+    aide:`${PERS} personnes, piscine, linge compris, ménage de fin de séjour en plus. Les enfants comptent pour une personne, même ceux qui mangent pour trois.`,
+    choix:prixSemaine.map(p => ({ v:String(p), t:euros(p) + ' la semaine',
+      s:`${euros(p / 2)} par famille · ${euros(Math.round(p / PERS / NUITS))} par pers. et par nuit` }))
+      .concat([{ v:'moins', t:'Moins que tout ça' }]) },
+  { id:'weekend', titre:'Vous vivez à Marseille. C’est le genre d’endroit où vous iriez en week-end entre amis ?',
+    aide:'Un peu plus d’une heure de route, arrivée le vendredi soir, départ le dimanche.',
+    choix:['Oui, je cherche déjà une date','Oui, pour une occasion','Plutôt l’été','Pas vraiment mon genre'] },
+  { id:'prix_we', titre:'Pour ce week-end hors saison, combien mettriez-vous par adulte ?',
+    aide:'Les deux nuits, maison entière partagée entre amis, hors repas.',
+    choix:[60,90,120,150,180].map(p => ({ v:String(p), t:euros(p) + ' par adulte' })).concat([{ v:'moins', t:'Moins que ça' }]) },
+  { id:'services', titre:'Quels services seraient indispensables pour vous ?', max:3, puces:true,
+    aide:'Trois maximum. Le choix est cruel, c’est fait exprès.', choix:services,
+    texte:{ id:'services_idee', label:'Une idée qui manque ?' } },
+  { id:'placard', titre:'Le placard plein : combien ajouteriez-vous pour ce service ?',
+    aide:'Vous commandez vos courses avant de partir, elles sont rangées à votre arrivée. Vous payez les courses, et ce service en plus, une fois par séjour.',
+    choix:[{ v:'0', t:'Rien, je fais mes courses moi-même' }].concat([20,40,60,80].map(p => ({ v:String(p), t:euros(p) + ' par séjour' }))) },
+  { id:'canal', titre:'Où iriez-vous chercher ce genre de maison ?', max:2,
+    aide:'Deux réponses maximum.',
+    choix:melange(['Airbnb ou Abritel','Instagram','Le bouche-à-oreille','Gens de Confiance','Google','Un site ou un label spécialisé']) },
+  { id:'frein', titre:'Qu’est-ce qui vous ferait hésiter ?',
+    aide:'Soyez sans pitié, c’est la réponse la plus utile.',
+    texte:{ id:'frein_txt', label:'Votre réponse', long:true } },
+  { id:'vous', titre:'Dernière question : qui êtes-vous, en gros ?', final:true,
+    groupes:[
+      { id:'age', label:'Votre âge', choix:['Moins de 30 ans','30-39 ans','40-49 ans','50-59 ans','60 ans et plus'] },
+      { id:'enfants', label:'Enfants à la maison', choix:['Oui','Non'] },
+      { id:'zone', label:'Vous habitez', choix:['Autour de Marseille ou Aix','Ailleurs dans le Sud','Ailleurs'] }
+    ],
+    texte:{ id:'prenom', label:'Votre prénom, si vous le souhaitez. Laissez vide pour rester anonyme.' } }
+];
+
+const R = {};
+const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+let n = -1, pageVue = null;
+const $ = s => document.querySelector(s);
+const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
+
+function boutonChoix(q, cle, c, max){
+  const v = typeof c === 'string' ? c : c.v, t = typeof c === 'string' ? c : c.t;
+  const b = el('button', 'opt'); b.type = 'button'; b.textContent = t;
+  if (c.s) b.append(el('small', '', c.s));
+  const actif = () => max ? (R[cle] || []).includes(v) : R[cle] === v;
+  b.setAttribute('aria-pressed', actif());
+  b.onclick = () => {
+    if (max){
+      const l = R[cle] || (R[cle] = []);
+      const i = l.indexOf(v);
+      if (i >= 0) l.splice(i, 1); else if (l.length < max) l.push(v);
+    } else R[cle] = R[cle] === v ? undefined : v;
+    rendre();
+  };
+  if (max && !actif() && (R[cle] || []).length >= max) b.disabled = true;
+  return b;
+}
+
+function champTexte(t){
+  const l = el('label', 'champ'); l.append(t.label);
+  const c = t.long ? el('textarea') : el('input');
+  if (!t.long) c.type = 'text';
+  c.id = 'c_' + t.id; c.maxLength = t.long ? 400 : 120; c.value = R[t.id] || '';
+  c.oninput = () => { R[t.id] = c.value; };
+  l.append(c); return l;
+}
+
+function vignettes(){
+  const g = el('div', 'pages');
+  pages.forEach((p, i) => {
+    const d = el('div', 'page');
+    const tete = el('div', 'page-tete'); tete.append(el('b', '', 'Page ' + lettre(i)));
+    const voir = el('button', 'lien', 'Voir en entier'); voir.type = 'button'; voir.onclick = () => ouvrir(p, i); tete.append(voir);
+    const v = el('button', 'vignette'); v.type = 'button'; v.setAttribute('aria-label', 'Voir la page ' + lettre(i) + ' en entier');
+    const im = el('img'); im.src = `img/${p}-haut.jpg`; im.alt = 'Haut de la page ' + lettre(i); im.width = 640; im.height = 420;
+    v.append(im); v.onclick = () => ouvrir(p, i);
+    const o = boutonChoix({}, 'page', { v:p, t:'Ma préférée : page ' + lettre(i) });
+    d.append(tete, v, o); g.append(d);
+  });
+  return g;
+}
+
+function ouvrir(p, i){
+  pageVue = p;
+  $('#grand-img').src = `img/${p}-${innerWidth < 700 ? 'tel' : 'ordi'}.jpg`;
+  $('#grand-img').alt = 'Page d’accueil ' + lettre(i);
+  $('#grand-corps').scrollTop = 0; $('#grand').hidden = false; $('#fermer').focus();
+}
+$('#fermer').onclick = () => { $('#grand').hidden = true; };
+$('#elire').onclick = () => { R.page = pageVue; $('#grand').hidden = true; rendre(); };
+
+function accueil(){
+  const s = $('#ecran'); s.replaceChildren();
+  s.append(el('h1', '', 'Trois minutes pour me dire ce que vous en pensez'), el('p', 'duree', DUREE));
+  const b = el('div', 'bloc');
+  b.append(
+    el('p', '', 'Je prépare un projet et j’ai besoin de votre avis, le vrai.'),
+    el('p', '', 'Des maisons de vacances en Provence, louées entières, pour deux familles ou une bande d’amis, 12 personnes au maximum. Tout est prêt avant votre arrivée : les lits, le linge, le placard plein si vous le voulez, et de quoi occuper les enfants.'),
+    el('p', '', 'Et dans chaque maison, une pièce cachée, invisible à l’œil nu, qu’on ouvre au bout d’une chasse au trésor. La première maison est prévue près de L’Isle-sur-la-Sorgue, pour le printemps 2027.'),
+    el('p', '', 'Soyez francs : une critique me sert bien plus qu’un compliment gentil. Vous pouvez répondre sans donner votre nom.')
+  );
+  s.append(b);
+  const p = $('#pied-in'); p.replaceChildren();
+  const go = el('button', 'btn', 'C’est parti'); go.type = 'button'; go.onclick = () => aller(0); p.append(go);
+}
+
+function rendre(){
+  const q = Q[n], s = $('#ecran');
+  const garde = scrollY;
+  s.replaceChildren();
+  document.getElementById('app').classList.toggle('large', !!q.large);
+  $('#barre').hidden = false;
+  $('#compte').textContent = `Question ${n + 1} sur ${Q.length}`;
+  $('#reste').textContent = n === Q.length - 1 ? 'Dernière ligne droite' : '';
+  $('#jauge').style.width = ((n + 1) / Q.length * 100) + '%';
+  s.append(el('h2', '', q.titre));
+  if (q.aide) s.append(el('p', 'aide', q.aide));
+  if (q.pagesSite) s.append(vignettes());
+  if (q.choix){
+    const o = el('div', 'options' + (q.puces ? ' puces' : ''));
+    q.choix.forEach(c => o.append(boutonChoix(q, q.id, c, q.max)));
+    s.append(o);
+  }
+  (q.groupes || []).forEach(g => {
+    const b = el('div', 'bloc'); b.append(el('p', '', g.label)); b.lastChild.style.fontWeight = 500;
+    const o = el('div', 'options puces'); g.choix.forEach(c => o.append(boutonChoix(q, g.id, c))); b.append(o); s.append(b);
+  });
+  if (q.texte) s.append(champTexte(q.texte));
+
+  const p = $('#pied-in'); p.replaceChildren();
+  const ret = el('button', 'btn second', 'Retour'); ret.type = 'button'; ret.onclick = () => aller(n - 1);
+  const repondu = q.choix || q.groupes || q.pagesSite ? (q.groupes ? q.groupes.some(g => R[g.id]) : (Array.isArray(R[q.id]) ? R[q.id].length : R[q.id])) : true;
+  const suite = el('button', 'btn', q.final ? 'Voir l’envoi' : (repondu ? 'Suivant' : 'Passer')); suite.type = 'button';
+  suite.onclick = () => aller(n + 1);
+  p.append(ret, suite);
+  scrollTo(0, garde);
+}
+
+function aller(i){
+  if (i < 0){ n = -1; $('#barre').hidden = true; accueil(); scrollTo(0, 0); return; }
+  if (i >= Q.length){ fin(); scrollTo(0, 0); return; }
+  n = i; scrollTo(0, 0); rendre(); scrollTo(0, 0);
+}
+
+const clesTexte = ['nom','nom_mot','page','page_pourquoi','piece','atouts','prix_ete','weekend','prix_we','services','services_idee','placard','canal','frein_txt','age','enfants','zone','prenom'];
+function donnees(){
+  const d = { id };
+  clesTexte.forEach(k => { const v = R[k]; if (Array.isArray(v) ? v.length : (v && String(v).trim())) d[k] = Array.isArray(v) ? v.join(' | ') : String(v).trim(); });
+  return d;
+}
+function adresse(){ return COLLECTE + '?' + new URLSearchParams(donnees()).toString(); }
+function recap(){ return Object.entries(donnees()).filter(([k]) => k !== 'id').map(([k, v]) => k + ' : ' + v).join('\n') || 'Aucune réponse'; }
+
+function merci(){
+  const s = $('#ecran'); s.replaceChildren();
+  $('#barre').hidden = true; $('#pied-in').replaceChildren(); $('#pied').hidden = true;
+  s.append(el('h2', '', 'Merci, c’est noté.'), el('p', '', 'La pièce cachée, elle, reste cachée.'));
+}
+
+function fin(){
+  const s = $('#ecran'), p = $('#pied-in'); s.replaceChildren(); p.replaceChildren();
+  document.getElementById('app').classList.remove('large');
+  $('#compte').textContent = 'Terminé'; $('#reste').textContent = ''; $('#jauge').style.width = '100%';
+  const ret = el('button', 'btn second', 'Retour'); ret.type = 'button'; ret.onclick = () => aller(Q.length - 1);
+  if (COLLECTE){
+    s.append(el('h2', '', 'Il ne reste qu’à envoyer'), el('p', 'aide', 'Un clic et c’est terminé.'));
+    const a = el('button', 'btn', 'Envoyer mes réponses'); a.type = 'button';
+    a.onclick = () => {
+      a.disabled = true; a.textContent = 'Envoi en cours';
+      fetch(adresse(), { mode:'no-cors', keepalive:true }).then(merci, () => {
+        a.disabled = false; a.textContent = 'Réessayer';
+        s.append(el('p', 'aide', 'L’envoi n’a pas abouti. Vérifiez votre connexion, puis réessayez.'));
+      });
+    };
+    p.append(ret, a);
+  } else {
+    s.append(el('h2', '', 'Il ne reste qu’à me les envoyer'), el('p', 'aide', 'Copiez vos réponses et collez-les dans un message à Thomas.'));
+    const r = el('div', 'recap', recap()); r.id = 'recap'; s.append(r);
+    const c = el('button', 'btn', 'Copier mes réponses'); c.type = 'button';
+    c.onclick = () => { const ok = () => { c.textContent = 'Copié, à coller dans un message'; };
+      navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(recap()).then(ok, () => { c.textContent = 'Sélectionnez le texte ci-dessus'; }) : (c.textContent = 'Sélectionnez le texte ci-dessus'); };
+    p.append(ret, c);
+  }
+}
+accueil();
+</script>
+</body>
+</html>
