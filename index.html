@@ -133,7 +133,8 @@ const Q = [
     choix:[{ v:'0', t:'Rien, je fais mes courses moi-même' }].concat([20,40,60,80].map(p => ({ v:String(p), t:euros(p) + ' par séjour' }))) },
   { id:'canal', titre:'Où iriez-vous chercher ce genre de maison ?', max:2,
     aide:'Deux réponses maximum.',
-    choix:melange(['Airbnb ou Abritel','Instagram','Le bouche-à-oreille','Gens de Confiance','Google','Un site ou un label spécialisé']) },
+    choix:melange(['Airbnb ou Abritel','Instagram','Le bouche-à-oreille','Gens de Confiance','Google','Un site ou un label spécialisé']).concat(['Autre']),
+    texte:{ id:'canal_autre', label:'Si autre, lequel ?' } },
   { id:'frein', titre:'Qu’est-ce qui vous ferait hésiter ?',
     aide:'Soyez sans pitié, c’est la réponse la plus utile.',
     texte:{ id:'frein_txt', label:'Votre réponse', long:true } },
@@ -266,6 +267,11 @@ const clesTexte = ['nom','nom_mot','page','page_pourquoi','piece','atouts','prix
 function donnees(){
   const d = { id };
   clesTexte.forEach(k => { const v = R[k]; if (Array.isArray(v) ? v.length : (v && String(v).trim())) d[k] = Array.isArray(v) ? v.join(' | ') : String(v).trim(); });
+  const autre = (R.canal_autre || '').trim();
+  if (autre){
+    const l = (R.canal || []).filter(c => c !== 'Autre').concat('Autre : ' + autre);
+    d.canal = l.join(' | ');
+  }
   return d;
 }
 function adresse(){ return COLLECTE + '?' + new URLSearchParams(donnees()).toString(); }
