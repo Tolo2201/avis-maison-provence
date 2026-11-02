@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta property="og:title" content="Trois minutes pour me dire ce que vous en pensez">
-<meta property="og:description" content="Mon projet de maisons en Provence. Votre avis, le vrai.">
+<meta property="og:title" content="Trois minutes pour nous dire ce que vous en pensez">
+<meta property="og:description" content="Notre projet de maisons en Provence. Votre avis, le vrai.">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Questionnaire À l'écart</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -84,7 +84,7 @@ textarea{min-height:96px;resize:vertical}
 <script>
 /* Adresse du collecteur (Google Sheet). Vide : la fin du questionnaire propose de copier les réponses. */
 const COLLECTE = 'https://script.google.com/macros/s/AKfycbzlHxQ-Wyhn4YzfeVVAU825u4RBYHNFKQ6w1KEwKR5aMolFbK5ny_tuE_jtJeNxGrT-/exec';
-const DUREE = 'Environ 3 minutes · 12 questions';
+const DUREE = 'Environ 3 minutes · 13 questions';
 
 const PERS = 12, NUITS = 7;
 const euros = n => n.toLocaleString('fr-FR').replace(/\s/g, ' ') + ' €';
@@ -137,13 +137,16 @@ const Q = [
   { id:'frein', titre:'Qu’est-ce qui vous ferait hésiter ?',
     aide:'Soyez sans pitié, c’est la réponse la plus utile.',
     texte:{ id:'frein_txt', label:'Votre réponse', long:true } },
-  { id:'vous', titre:'Dernière question : qui êtes-vous, en gros ?', final:true,
+  { id:'vous', titre:'Qui êtes-vous, en gros ?',
     groupes:[
       { id:'age', label:'Votre âge', choix:['Moins de 30 ans','30-39 ans','40-49 ans','50-59 ans','60 ans et plus'] },
       { id:'enfants', label:'Enfants à la maison', choix:['Oui','Non'] },
       { id:'zone', label:'Vous habitez', choix:['Autour de Marseille ou Aix','Ailleurs dans le Sud','Ailleurs'] }
     ],
-    texte:{ id:'prenom', label:'Votre prénom, si vous le souhaitez. Laissez vide pour rester anonyme.' } }
+    texte:{ id:'prenom', label:'Votre prénom, pour qu’on pense à vous pour l’invitation. Laissez vide pour rester anonyme.' } },
+  { id:'blanche', titre:'La page blanche', final:true,
+    aide:'Une idée, un souvenir, une remarque, une adresse. Elle est à vous.',
+    texte:{ id:'page_blanche', label:'Écrivez ce que vous voulez', long:true, max:600 } }
 ];
 
 const R = {};
@@ -174,7 +177,7 @@ function champTexte(t){
   const l = el('label', 'champ'); l.append(t.label);
   const c = t.long ? el('textarea') : el('input');
   if (!t.long) c.type = 'text';
-  c.id = 'c_' + t.id; c.maxLength = t.long ? 400 : 120; c.value = R[t.id] || '';
+  c.id = 'c_' + t.id; c.maxLength = t.max || (t.long ? 400 : 120); c.value = R[t.id] || '';
   c.oninput = () => { R[t.id] = c.value; };
   l.append(c); return l;
 }
@@ -205,13 +208,16 @@ $('#elire').onclick = () => { R.page = pageVue; $('#grand').hidden = true; rendr
 
 function accueil(){
   const s = $('#ecran'); s.replaceChildren();
-  s.append(el('h1', '', 'Trois minutes pour me dire ce que vous en pensez'), el('p', 'duree', DUREE));
+  s.append(el('h1', '', 'Trois minutes pour nous dire ce que vous en pensez'), el('p', 'duree', DUREE));
   const b = el('div', 'bloc');
   b.append(
-    el('p', '', 'Je prépare un projet et j’ai besoin de votre avis, le vrai.'),
-    el('p', '', 'Des maisons de vacances en Provence, louées entières, pour deux familles ou une bande d’amis, 12 personnes au maximum. Tout est prêt avant votre arrivée : les lits, le linge, le placard plein si vous le voulez, et de quoi occuper les enfants.'),
-    el('p', '', 'Et dans chaque maison, une pièce cachée, invisible à l’œil nu, qu’on ouvre au bout d’une chasse au trésor. La première maison est prévue près de L’Isle-sur-la-Sorgue, pour le printemps 2027.'),
-    el('p', '', 'Soyez francs : une critique me sert bien plus qu’un compliment gentil. Vous pouvez répondre sans donner votre nom.')
+    el('p', '', 'Salut à tous, amis, famille et copains !'),
+    el('p', '', 'Comme vous le savez, nous préparons un projet et nous avons besoin de votre avis, le vrai, le sincère.'),
+    el('p', '', 'Nous lançons une marque de maisons hôtelières en Provence, louées entières pour deux familles ou une bande d’amis. La première, que nous avons trouvée à Vélorgues, à 15 minutes à vélo de L’Isle-sur-la-Sorgue, accueillera jusqu’à 12 personnes.'),
+    el('p', '', 'Chaque maison aura sa pièce cachée, à découvrir au fil d’une chasse au trésor.'),
+    el('p', '', 'Nous voulons créer des maisons où il fait bon vivre, et où tout ce qui complique les vacances entre amis ou en famille disparaît. Ça se joue dans les détails, comme la vaisselle, et dans des choses plus visibles, comme l’option placard plein.'),
+    el('p', '', 'Il y a quelques questions, pour environ 3 minutes, et à la fin une page blanche pour écrire ce que vous voulez. Soyez vraiment sincères : ce sont vos vrais avis qui nous feront avancer.'),
+    el('p', '', 'Chaque réponse donne lieu à une invitation potentielle dans la maison. On vous embrasse, on espère vous recevoir très vite, et merci !')
   );
   s.append(b);
   const p = $('#pied-in'); p.replaceChildren();
@@ -256,7 +262,7 @@ function aller(i){
   n = i; scrollTo(0, 0); rendre(); scrollTo(0, 0);
 }
 
-const clesTexte = ['nom','nom_mot','page','page_pourquoi','piece','atouts','prix_ete','weekend','prix_we','services','services_idee','placard','canal','frein_txt','age','enfants','zone','prenom'];
+const clesTexte = ['nom','nom_mot','page','page_pourquoi','piece','atouts','prix_ete','weekend','prix_we','services','services_idee','placard','canal','frein_txt','age','enfants','zone','prenom','page_blanche'];
 function donnees(){
   const d = { id };
   clesTexte.forEach(k => { const v = R[k]; if (Array.isArray(v) ? v.length : (v && String(v).trim())) d[k] = Array.isArray(v) ? v.join(' | ') : String(v).trim(); });
@@ -288,7 +294,7 @@ function fin(){
     };
     p.append(ret, a);
   } else {
-    s.append(el('h2', '', 'Il ne reste qu’à me les envoyer'), el('p', 'aide', 'Copiez vos réponses et collez-les dans un message à Thomas.'));
+    s.append(el('h2', '', 'Il ne reste qu’à nous les envoyer'), el('p', 'aide', 'Copiez vos réponses et collez-les dans un message à Thomas.'));
     const r = el('div', 'recap', recap()); r.id = 'recap'; s.append(r);
     const c = el('button', 'btn', 'Copier mes réponses'); c.type = 'button';
     c.onclick = () => { const ok = () => { c.textContent = 'Copié, à coller dans un message'; };
