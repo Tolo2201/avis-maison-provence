@@ -280,7 +280,7 @@ function recap(){ return Object.entries(donnees()).filter(([k]) => k !== 'id').m
 function merci(){
   const s = $('#ecran'); s.replaceChildren();
   $('#barre').hidden = true; $('#pied-in').replaceChildren(); $('#pied').hidden = true;
-  s.append(el('h2', '', 'Merci, c’est noté.'), el('p', '', 'La pièce cachée, elle, reste cachée.'));
+  s.append(el('h2', '', 'Merci, c’est noté.'), el('p', '', 'On vous attend.'));
 }
 
 function fin(){
