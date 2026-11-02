@@ -113,7 +113,7 @@ const Q = [
     choix:['Je veux y aller rien que pour ça','Sympa, un vrai plus','Mignon, sans plus','Ça ne me parle pas'] },
   { id:'atouts', titre:'Qu’est-ce qui vous ferait choisir cette maison plutôt qu’une autre ?', max:2,
     aide:'Deux réponses maximum.',
-    choix:melange(['La maison et son charme','La piscine et le grand jardin','Tout est prêt à l’arrivée','La pièce cachée et la chasse au trésor','De quoi occuper les enfants','Les villages autour']) },
+    choix:melange(['La maison et son charme','La piscine et le grand jardin','Tout est prêt à l’arrivée','La pièce cachée et la chasse au trésor','Une salle de jeux digne de ce nom','Les villages autour']) },
   { id:'prix_ete', titre:'Une semaine en août, la maison entière, jusqu’à quel prix réservez-vous sans trop hésiter ?',
     aide:`${PERS} personnes, piscine, linge compris, ménage de fin de séjour en plus. Les enfants comptent pour une personne, même ceux qui mangent pour trois.`,
     choix:prixSemaine.map(p => ({ v:String(p), t:euros(p) + ' la semaine',
