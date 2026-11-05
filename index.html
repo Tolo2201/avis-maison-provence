@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta property="og:title" content="Trois minutes pour nous dire ce que vous en pensez">
+<meta property="og:title" content="Quatre minutes pour nous dire ce que vous en pensez">
 <meta property="og:description" content="Notre projet de maisons en Provence. Votre avis, le vrai.">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Questionnaire À l'écart</title>
@@ -84,11 +84,27 @@ textarea{min-height:96px;resize:vertical}
 <script>
 /* Adresse du collecteur (Google Sheet). Vide : la fin du questionnaire propose de copier les réponses. */
 const COLLECTE = 'https://script.google.com/macros/s/AKfycbzlHxQ-Wyhn4YzfeVVAU825u4RBYHNFKQ6w1KEwKR5aMolFbK5ny_tuE_jtJeNxGrT-/exec';
-const DUREE = 'Environ 3 minutes · 13 questions';
+const DUREE = 'Environ 4 minutes · 16 questions';
+const VERSION = '2';
+const debut = { t:0 };
 
 const PERS = 12, NUITS = 7;
 const euros = n => n.toLocaleString('fr-FR').replace(/\s/g, ' ') + ' €';
-const prixSemaine = [5000, 6000, 7000, 8000, 9000];
+const parPers = p => Math.round(p / PERS);
+function echelle(prix){
+  const min = prix[0], max = prix[prix.length - 1];
+  return [{ v:'moins', t:'Moins de ' + euros(min) }]
+    .concat(prix.map(p => ({ v:String(p), t:euros(p), s:euros(parPers(p)) + ' par pers.' })))
+    .concat([{ v:'plus', t:'Plus de ' + euros(max) }]);
+}
+const HAUTE = echelle([500, 600, 700, 800, 900, 1000, 1200]);
+const MOYENNE = echelle([400, 500, 600, 700, 800, 900]);
+const BASSE = echelle([300, 400, 500, 600, 700, 800]);
+const groupesPrix = (cle, ech) => [
+  { id:cle + '_ok', label:'Je réserve sans hésiter jusqu’à', choix:ech },
+  { id:cle + '_max', label:'Je ne réserve plus au-delà de', choix:ech, plancher:cle + '_ok' }
+];
+const AIDE_PRIX = 'La maison entière, par nuit. Linge compris, ménage en plus. Le prix par personne est calculé pour 12.';
 
 function melange(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 /* L'ordre change à chaque ouverture : la première page montrée n'a pas d'avantage. La lettre suit la position. */
@@ -111,26 +127,30 @@ const Q = [
     texte:{ id:'page_pourquoi', label:'Pourquoi celle-là ? Trois mots suffisent.' } },
   { id:'piece', titre:'Une pièce invisible, qu’on ouvre après une chasse au trésor. Votre réaction ?',
     choix:['Je veux y aller rien que pour ça','Sympa, un vrai plus','Mignon, sans plus','Ça ne me parle pas'] },
+  { id:'piece_contenu', titre:'Et derrière la porte, vous mettriez quoi ?', max:2, puces:true,
+    aide:'Deux choix maximum.',
+    choix:melange(['Une dégustation de vins et de bonbons','Un bar clandestin','Un petit cinéma','Des flippers et des bornes d’arcade','Un salon de vinyles','Un sauna','Une cave à fromages','Un dortoir secret pour les enfants','Des jeux rares et introuvables']).concat(['Autre']),
+    texte:{ id:'piece_autre', label:'Si autre, quoi ?' } },
+  { id:'chasse', titre:'La chasse au trésor s’adapte à vous. Vous partiriez pour combien de temps ?',
+    groupes:[
+      { id:'chasse_duree', label:'Deux réponses maximum', max:2, choix:['2 heures','Une journée','2 jours','Plus, le fil rouge du séjour','Pas de chasse pour moi'] },
+      { id:'chasse_modulable', label:'Choisir la durée en réservant, ça marcherait pour vous ?', choix:['Oui, c’est exactement ça','Oui, si c’est simple','Une seule formule me suffit','Ça ne me parle pas'] }
+    ] },
   { id:'atouts', titre:'Qu’est-ce qui vous ferait choisir cette maison plutôt qu’une autre ?', max:2,
     aide:'Deux réponses maximum.',
     choix:melange(['La maison et son charme','La piscine et le grand jardin','Tout est prêt à l’arrivée','La pièce cachée et la chasse au trésor','Une salle de jeux digne de ce nom','Les villages autour']) },
-  { id:'prix_ete', titre:'Une semaine en août, la maison entière, jusqu’à quel prix réservez-vous sans trop hésiter ?',
-    aide:`${PERS} personnes, piscine, linge compris, ménage de fin de séjour en plus. Les enfants comptent pour une personne, même ceux qui mangent pour trois.`,
-    choix:prixSemaine.map(p => ({ v:String(p), t:euros(p) + ' la semaine',
-      s:`${euros(p / 2)} par famille · ${euros(Math.round(p / PERS / NUITS))} par pers. et par nuit` }))
-      .concat([{ v:'moins', t:'Moins que tout ça' }]) },
+  { id:'prix_hs', titre:'De juin à fin août, combien pour la nuit ?', aide:AIDE_PRIX, groupes:groupesPrix('prix_hs', HAUTE) },
+  { id:'prix_ms', titre:'De mars à mai et en septembre, combien pour la nuit ?', aide:AIDE_PRIX + ' Saison des longs week-ends et des premiers plongeons courageux.', groupes:groupesPrix('prix_ms', MOYENNE) },
   { id:'weekend', titre:'Vous vivez à Marseille. C’est le genre d’endroit où vous iriez en week-end entre amis ?',
     aide:'Un peu plus d’une heure de route, arrivée le vendredi soir, départ le dimanche.',
     choix:['Oui, je cherche déjà une date','Oui, pour une occasion','Plutôt l’été','Pas vraiment mon genre'] },
-  { id:'prix_we', titre:'Pour ce week-end hors saison, combien mettriez-vous par adulte ?',
-    aide:'Les deux nuits, maison entière partagée entre amis, hors repas.',
-    choix:[60,90,120,150,180].map(p => ({ v:String(p), t:euros(p) + ' par adulte' })).concat([{ v:'moins', t:'Moins que ça' }]) },
+  { id:'prix_bs', titre:'D’octobre à février, pour un week-end de deux nuits, combien pour la nuit ?', aide:AIDE_PRIX, groupes:groupesPrix('prix_bs', BASSE) },
   { id:'services', titre:'Quels services seraient indispensables pour vous ?', max:3, puces:true,
     aide:'Trois maximum. Le choix est cruel, c’est fait exprès.', choix:services,
     texte:{ id:'services_idee', label:'Une idée qui manque ?' } },
   { id:'placard', titre:'Le placard plein : combien ajouteriez-vous pour ce service ?',
     aide:'Vous commandez vos courses avant de partir, elles sont rangées à votre arrivée. Vous payez les courses, et ce service en plus, une fois par séjour.',
-    choix:[{ v:'0', t:'Rien, je fais mes courses moi-même' }].concat([20,40,60,80].map(p => ({ v:String(p), t:euros(p) + ' par séjour' }))) },
+    choix:[{ v:'0', t:'Rien, je fais mes courses moi-même' }].concat([30,50,70,90].map(p => ({ v:String(p), t:euros(p) + ' par séjour' }))) },
   { id:'canal', titre:'Où iriez-vous chercher ce genre de maison ?', max:2,
     aide:'Deux réponses maximum.',
     choix:melange(['Airbnb ou Abritel','Instagram','Le bouche-à-oreille','Gens de Confiance','Google','Un site ou un label spécialisé']).concat(['Autre']),
@@ -209,7 +229,7 @@ $('#elire').onclick = () => { R.page = pageVue; $('#grand').hidden = true; rendr
 
 function accueil(){
   const s = $('#ecran'); s.replaceChildren();
-  s.append(el('h1', '', 'Trois minutes pour nous dire ce que vous en pensez'), el('p', 'duree', DUREE));
+  s.append(el('h1', '', 'Quatre minutes pour nous dire ce que vous en pensez'), el('p', 'duree', DUREE));
   const b = el('div', 'bloc');
   b.append(
     el('p', '', 'Salut à tous, famille et copains !'),
@@ -217,12 +237,12 @@ function accueil(){
     el('p', '', 'Nous lançons une marque de maisons hôtelières en Provence, louées entières pour deux familles ou une bande d’amis. La première, que nous avons trouvée, est à Vélorgues, à 15 minutes à vélo de L’Isle-sur-la-Sorgue, et pourra accueillir jusqu’à 12 personnes.'),
     el('p', '', 'La maison aura une pièce cachée, à découvrir au fil d’une chasse au trésor adaptable si vous êtes une bande de copains ou plusieurs familles avec enfants.'),
     el('p', '', 'Nous voulons créer des maisons où il fait bon vivre, et où tout ce qui complique les vacances entre amis ou en famille disparaît. Ça se joue dans les détails, comme deux lave-vaisselle et deux machines à café, et dans des choses plus visibles, comme avoir les placards pleins et vos courses faites le jour de votre arrivée.'),
-    el('p', '', 'Voici quelques questions, qui vous prendront environ 3 minutes, et à la fin une page blanche pour écrire ce que vous voulez. Soyez vraiment sincères : ce sont vos avis qui nous feront avancer.'),
+    el('p', '', 'Voici quelques questions, qui vous prendront environ 4 minutes, et à la fin une page blanche pour écrire ce que vous voulez. Soyez vraiment sincères : ce sont vos avis qui nous feront avancer.'),
     el('p', '', 'Chaque réponse donne lieu à une invitation potentielle dans la maison. On vous embrasse, on espère vous recevoir très vite, et merci !')
   );
   s.append(b);
   const p = $('#pied-in'); p.replaceChildren();
-  const go = el('button', 'btn', 'C’est parti'); go.type = 'button'; go.onclick = () => aller(0); p.append(go);
+  const go = el('button', 'btn', 'C’est parti'); go.type = 'button'; go.onclick = () => { debut.t = debut.t || Date.now(); aller(0); }; p.append(go);
 }
 
 function rendre(){
@@ -244,7 +264,15 @@ function rendre(){
   }
   (q.groupes || []).forEach(g => {
     const b = el('div', 'bloc'); b.append(el('p', '', g.label)); b.lastChild.style.fontWeight = 500;
-    const o = el('div', 'options puces'); g.choix.forEach(c => o.append(boutonChoix(q, g.id, c))); b.append(o); s.append(b);
+    const o = el('div', 'options puces');
+    const rang = id => g.choix.findIndex(c => (c.v || c) === R[id]);
+    if (g.plancher && R[g.id] && rang(g.id) < rang(g.plancher)) R[g.id] = undefined;
+    g.choix.forEach((c, i) => {
+      const bouton = boutonChoix(q, g.id, c, g.max);
+      if (g.plancher && R[g.plancher] && i < rang(g.plancher)) bouton.disabled = true;
+      o.append(bouton);
+    });
+    b.append(o); s.append(b);
   });
   if (q.texte) s.append(champTexte(q.texte));
 
@@ -263,19 +291,19 @@ function aller(i){
   n = i; scrollTo(0, 0); rendre(); scrollTo(0, 0);
 }
 
-const clesTexte = ['nom','nom_mot','page','page_pourquoi','piece','atouts','prix_ete','weekend','prix_we','services','services_idee','placard','canal','frein_txt','age','enfants','zone','prenom','page_blanche'];
+const clesTexte = ['nom','nom_mot','page','page_pourquoi','piece','piece_contenu','chasse_duree','chasse_modulable','atouts','prix_hs_ok','prix_hs_max','prix_ms_ok','prix_ms_max','weekend','prix_bs_ok','prix_bs_max','services','services_idee','placard','canal','frein_txt','age','enfants','zone','prenom','page_blanche'];
 function donnees(){
-  const d = { id };
+  const d = { id, version:VERSION, ordre:pages.join(' | ') };
+  if (debut.t) d.duree_s = String(Math.round((Date.now() - debut.t) / 1000));
   clesTexte.forEach(k => { const v = R[k]; if (Array.isArray(v) ? v.length : (v && String(v).trim())) d[k] = Array.isArray(v) ? v.join(' | ') : String(v).trim(); });
-  const autre = (R.canal_autre || '').trim();
-  if (autre){
-    const l = (R.canal || []).filter(c => c !== 'Autre').concat('Autre : ' + autre);
-    d.canal = l.join(' | ');
-  }
+  [['canal', 'canal_autre'], ['piece_contenu', 'piece_autre']].forEach(([cle, champ]) => {
+    const autre = (R[champ] || '').trim();
+    if (autre) d[cle] = (R[cle] || []).filter(c => c !== 'Autre').concat('Autre : ' + autre).join(' | ');
+  });
   return d;
 }
 function adresse(){ return COLLECTE + '?' + new URLSearchParams(donnees()).toString(); }
-function recap(){ return Object.entries(donnees()).filter(([k]) => k !== 'id').map(([k, v]) => k + ' : ' + v).join('\n') || 'Aucune réponse'; }
+function recap(){ return Object.entries(donnees()).filter(([k]) => !['id','version','ordre','duree_s'].includes(k)).map(([k, v]) => k + ' : ' + v).join('\n') || 'Aucune réponse'; }
 
 function merci(){
   const s = $('#ecran'); s.replaceChildren();
