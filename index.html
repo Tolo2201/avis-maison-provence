@@ -84,7 +84,7 @@ textarea{min-height:96px;resize:vertical}
 <script>
 /* Adresse du collecteur (Google Sheet). Vide : la fin du questionnaire propose de copier les réponses. */
 const COLLECTE = 'https://script.google.com/macros/s/AKfycbzlHxQ-Wyhn4YzfeVVAU825u4RBYHNFKQ6w1KEwKR5aMolFbK5ny_tuE_jtJeNxGrT-/exec';
-const DUREE = 'Environ 4 minutes · 16 questions';
+const DUREE = 'Environ 4 minutes · 15 questions';
 const VERSION = '2';
 const debut = { t:0 };
 
@@ -145,7 +145,6 @@ const Q = [
   { id:'weekend', titre:'Vous vivez à Marseille. C’est le genre d’endroit où vous iriez en week-end entre amis ?',
     aide:'Un peu plus d’une heure de route, arrivée le vendredi soir, départ le dimanche.',
     choix:['Oui, je cherche déjà une date','Oui, pour une occasion','Plutôt l’été','Pas vraiment mon genre'] },
-  { id:'prix_bs', titre:'D’octobre à février, pour un week-end de deux nuits, combien pour la nuit ?', aide:AIDE_PRIX, groupes:groupesPrix('prix_bs', BASSE) },
   { id:'services', titre:'Quels services seraient indispensables pour vous ?', max:3, puces:true,
     aide:'Trois maximum. Le choix est cruel, c’est fait exprès.', choix:services,
     texte:{ id:'services_idee', label:'Une idée qui manque ?' } },
