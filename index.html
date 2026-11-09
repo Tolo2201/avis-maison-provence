@@ -84,7 +84,7 @@ textarea{min-height:96px;resize:vertical}
 <script>
 /* Adresse du collecteur (Google Sheet). Vide : la fin du questionnaire propose de copier les réponses. */
 const COLLECTE = 'https://script.google.com/macros/s/AKfycbzlHxQ-Wyhn4YzfeVVAU825u4RBYHNFKQ6w1KEwKR5aMolFbK5ny_tuE_jtJeNxGrT-/exec';
-const DUREE = 'Environ 4 minutes · 15 questions';
+const DUREE = 'Environ 4 minutes · 14 questions';
 const VERSION = '2';
 const debut = { t:0 };
 
@@ -158,17 +158,14 @@ const Q = [
   { id:'frein', titre:'Ton avis SINCÈRE, tes idées, tes pistes d’amélioration, et tout et tout',
     aide:'Soyez sans pitié, c’est la réponse la plus utile.',
     texte:{ id:'frein_txt', label:'Votre réponse', long:true } },
-  { id:'vous', titre:'T’es qui en fait ?',
+  { id:'vous', titre:'T’es qui en fait ?', final:true,
     groupes:[
       { id:'louer', label:'Votre manière de louer des maisons (plusieurs choix possibles)', max:4, choix:['Avec plusieurs familles','Seul','Avec des copains','En couple'] },
       { id:'age', label:'Votre âge', choix:['Moins de 30 ans','30-39 ans','40-49 ans','50-59 ans','60 ans et plus'] },
       { id:'enfants', label:'Enfants à la maison', choix:['Oui','Non'] },
       { id:'zone', label:'Vous habitez', choix:['Autour de Marseille ou Aix','Ailleurs dans le Sud','Ailleurs'] }
     ],
-    texte:{ id:'prenom', label:'Ton prénom, si tu veux. Si tu veux pas, tant pis, on n’en fera pas une maladie.' } },
-  { id:'blanche', titre:'La page blanche', final:true,
-    aide:'Une idée, un souvenir, une remarque, une adresse. Elle est à vous.',
-    texte:{ id:'page_blanche', label:'Écrivez ce que vous voulez', long:true, max:600 } }
+    texte:{ id:'prenom', label:'Ton prénom, si tu veux. Si tu veux pas, tant pis, on n’en fera pas une maladie.' } }
 ];
 
 const R = {};
@@ -238,7 +235,7 @@ function accueil(){
     el('p', '', 'Nous lançons une marque de maisons hôtelières en Provence, louées entières pour plusieurs familles ou une bande d’amis. La première, que nous avons trouvée, est à Vélorgues, à 15 minutes à vélo de L’Isle-sur-la-Sorgue, à 35 minutes de la gare d’Avignon et à 1 heure de Marseille. Elle pourra accueillir jusqu’à 12 personnes.'),
     el('p', '', 'La maison aura une pièce cachée, à découvrir au fil d’une chasse au trésor adaptable si vous êtes une bande de copains ou plusieurs familles avec enfants.'),
     el('p', '', 'Nous voulons créer des maisons où il fait bon vivre, et où tout ce qui complique les vacances entre amis ou en famille disparaît. Ça se joue dans les détails, comme deux lave-vaisselle et deux machines à café, et dans des choses plus visibles, comme avoir les placards pleins et vos courses faites le jour de votre arrivée.'),
-    el('p', '', 'Voici quelques questions, qui vous prendront environ 4 minutes, et à la fin une page blanche pour écrire ce que vous voulez. Soyez vraiment sincères : ce sont vos avis qui nous feront avancer.'),
+    el('p', '', 'Voici quelques questions, qui vous prendront environ 4 minutes. Soyez vraiment sincères : ce sont vos avis qui nous feront avancer.'),
     el('p', '', 'Chaque réponse donne lieu à une invitation potentielle dans la maison. On vous embrasse, on espère vous recevoir très vite, et merci !')
   );
   s.append(b);
