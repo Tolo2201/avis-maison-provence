@@ -150,7 +150,7 @@ const Q = [
     texte:{ id:'services_idee', label:'Une idée qui manque ?' } },
   { id:'placard', titre:'Le placard plein : combien ajouteriez-vous pour ce service ?',
     aide:'Vous commandez vos courses avant de partir, elles sont rangées à votre arrivée. Vous payez les courses, et ce service en plus, une fois par séjour.',
-    choix:[{ v:'0', t:'Rien, je fais mes courses moi-même' }].concat([30,50,70,90].map(p => ({ v:String(p), t:euros(p) + ' par séjour' }))) },
+    choix:[{ v:'0', t:'Rien, je fais mes courses moi-même' }].concat([50,70,90].map(p => ({ v:String(p), t:euros(p) + ' par séjour' }))) },
   { id:'canal', titre:'Où iriez-vous chercher ce genre de maison ?', max:2,
     aide:'Deux réponses maximum.',
     choix:melange(['Airbnb ou Abritel','Instagram','GreenGo','Gens de Confiance','Google','Un site ou un label spécialisé']).concat(['Autre']),
