@@ -158,8 +158,9 @@ const Q = [
   { id:'frein', titre:'Ton avis SINCÈRE, tes idées, tes pistes d’amélioration, et tout et tout',
     aide:'Soyez sans pitié, c’est la réponse la plus utile.',
     texte:{ id:'frein_txt', label:'Votre réponse', long:true } },
-  { id:'vous', titre:'Qui êtes-vous, en gros ?',
+  { id:'vous', titre:'T’es qui en fait ?',
     groupes:[
+      { id:'louer', label:'Votre manière de louer des maisons (plusieurs choix possibles)', max:4, choix:['Avec plusieurs familles','Seul','Avec des copains','En couple'] },
       { id:'age', label:'Votre âge', choix:['Moins de 30 ans','30-39 ans','40-49 ans','50-59 ans','60 ans et plus'] },
       { id:'enfants', label:'Enfants à la maison', choix:['Oui','Non'] },
       { id:'zone', label:'Vous habitez', choix:['Autour de Marseille ou Aix','Ailleurs dans le Sud','Ailleurs'] }
@@ -291,7 +292,7 @@ function aller(i){
   n = i; scrollTo(0, 0); rendre(); scrollTo(0, 0);
 }
 
-const clesTexte = ['nom','nom_mot','page','page_pourquoi','piece','piece_contenu','chasse_duree','chasse_modulable','atouts','prix_hs_ok','prix_hs_max','prix_ms_ok','prix_ms_max','weekend','prix_bs_ok','prix_bs_max','services','services_idee','placard','canal','frein_txt','age','enfants','zone','prenom','page_blanche'];
+const clesTexte = ['nom','nom_mot','page','page_pourquoi','piece','piece_contenu','chasse_duree','chasse_modulable','atouts','prix_hs_ok','prix_hs_max','prix_ms_ok','prix_ms_max','weekend','prix_bs_ok','prix_bs_max','services','services_idee','placard','canal','frein_txt','louer','age','enfants','zone','prenom','page_blanche'];
 function donnees(){
   const d = { id, version:VERSION, ordre:pages.join(' | ') };
   if (debut.t) d.duree_s = String(Math.round((Date.now() - debut.t) / 1000));
