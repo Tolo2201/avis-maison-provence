@@ -153,8 +153,8 @@ const Q = [
     choix:[{ v:'0', t:'Rien, je fais mes courses moi-même' }].concat([50,70,90].map(p => ({ v:String(p), t:euros(p) + ' par séjour' }))) },
   { id:'canal', titre:'Où iriez-vous chercher ce genre de maison ?', max:2,
     aide:'Deux réponses maximum.',
-    choix:melange(['Airbnb ou Abritel','Instagram','GreenGo','Gens de Confiance','Google','Un site ou un label spécialisé']).concat(['Autre']),
-    texte:{ id:'canal_autre', label:'Si autre, lequel ?' } },
+    choix:melange(['Airbnb','Abritel','Instagram','GreenGo','Gens de Confiance','Chez mes influenceurs préférés','Dans la presse papier']).concat(['Autre']),
+    texte:{ id:'canal_autre', label:'Vos influenceurs préférés, ou votre autre idée : lesquels ?' } },
   { id:'frein', titre:'Qu’est-ce qui vous ferait hésiter ?',
     aide:'Soyez sans pitié, c’est la réponse la plus utile.',
     texte:{ id:'frein_txt', label:'Votre réponse', long:true } },
@@ -296,10 +296,10 @@ function donnees(){
   const d = { id, version:VERSION, ordre:pages.join(' | ') };
   if (debut.t) d.duree_s = String(Math.round((Date.now() - debut.t) / 1000));
   clesTexte.forEach(k => { const v = R[k]; if (Array.isArray(v) ? v.length : (v && String(v).trim())) d[k] = Array.isArray(v) ? v.join(' | ') : String(v).trim(); });
-  [['canal', 'canal_autre'], ['piece_contenu', 'piece_autre']].forEach(([cle, champ]) => {
-    const autre = (R[champ] || '').trim();
-    if (autre) d[cle] = (R[cle] || []).filter(c => c !== 'Autre').concat('Autre : ' + autre).join(' | ');
-  });
+  const autrePiece = (R.piece_autre || '').trim();
+  if (autrePiece) d.piece_contenu = (R.piece_contenu || []).filter(c => c !== 'Autre').concat('Autre : ' + autrePiece).join(' | ');
+  const precisionCanal = (R.canal_autre || '').trim();
+  if (precisionCanal) d.canal = (R.canal || []).concat('Précision : ' + precisionCanal).join(' | ');
   return d;
 }
 function adresse(){ return COLLECTE + '?' + new URLSearchParams(donnees()).toString(); }
